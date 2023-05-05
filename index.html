@@ -28,10 +28,34 @@
         //replace iframe source with user data values
         var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
         var googleFormSrc = googleForm.getAttribute('src')
-        var googleFormClientId;
-        gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => googleFormClientId = client_id)
-        var googleFormSessionId;
-        gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => googleFormSessionId = id);
+
+        var googleFormClientId = function () {
+            const gaCookie = document.cookie.split(';').find(cookie => cookie.includes('_ga='));
+            if (gaCookie) {
+                const gaValue = gaCookie.split('=')[1];
+                const gaParts = gaValue.split('.');
+                if (gaParts.length >= 3) {
+                    return gaParts.slice(2).join('.');
+                }
+            }
+
+            return null;
+        }
+        // gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => googleFormClientId = client_id)
+        var googleFormSessionId = function () {
+            // Get the cookie value
+            var cookieValue = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('_ga_'))
+                .split('=')[1];
+
+            // Extract the value between the 2nd and 3rd period (.)
+            var value = cookieValue.split('.')[2];
+
+            // Return the extracted value
+            return value;
+        }
+        // gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => googleFormSessionId = id);
         var t = 0;
         var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
             t = t + 1;
