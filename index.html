@@ -41,7 +41,6 @@
             return null;
         }
         var googleFormClientId = getGaClientID();
-        // gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => googleFormClientId = client_id)
         var getGaSessionId = function () {
             // Get the cookie value
             var cookieValue = document.cookie
@@ -50,13 +49,16 @@
                 .split('=')[1];
 
             // Extract the value between the 2nd and 3rd period (.)
-            var value = cookieValue.split('.')[2];
+            if (cookieValue) {
+                var value = cookieValue.split('.')[2];
+                // Return the extracted value
+                return value;
+            }
 
-            // Return the extracted value
-            return value;
+            return null;
+
         }
         var googleFormSessionId = getGaSessionId()
-        // gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => googleFormSessionId = id);
         var t = 0;
         var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
             t = t + 1;
