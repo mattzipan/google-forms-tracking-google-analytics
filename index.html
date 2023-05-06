@@ -19,15 +19,9 @@
 
 <body>
 
-    <iframe
-        src="https://docs.google.com/forms/d/e/1FAIpQLSffBTD6UF5Weh1hDNHd4QSxlg4da0jxTTml666EKTn37xR1Qg/viewform?usp=pp_url&entry.1796799655=sdflkhjasdflkjhl&entry.1038416998=sdafkjhsdlkhjajk&embedded=true"
-        width="640" height="884" frameborder="0" marginheight="0" marginwidth="0">
-        Loading…
-    </iframe>
     <script>
         //replace iframe source with user data values
-        var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
-        var googleFormSrc = googleForm.getAttribute('src')
+        // function to get client ID
         var getGaClientID = function () {
             const gaCookie = document.cookie.split(';').find(cookie => cookie.includes('_ga='));
             if (gaCookie) {
@@ -39,7 +33,7 @@
             }
             return null;
         }
-        var googleFormClientId = getGaClientID();
+        // function to get session ID
         var getGaSessionId = function () {
             // Get the cookie value
             var cookieValue = document.cookie
@@ -55,15 +49,28 @@
             }
             return null;
         }
+
+        var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
+        var googleFormSrc = googleForm.getAttribute('src')
+        var googleFormClientId = getGaClientID();
         var googleFormSessionId = getGaSessionId()
+
+        // replace pre-filled link values with session data
         var t = 0;
         var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
             t = t + 1;
             return t === 2 ? googleFormSessionId : googleFormClientId;
         });
+
         // inject new src into iframe
         googleForm.setAttribute('src', result)
     </script>
+
+    <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSffBTD6UF5Weh1hDNHd4QSxlg4da0jxTTml666EKTn37xR1Qg/viewform?usp=pp_url&entry.1796799655=sdflkhjasdflkjhl&entry.1038416998=sdafkjhsdlkhjajk&embedded=true"
+        width="640" height="884" frameborder="0" marginheight="0" marginwidth="0">
+        Loading…
+    </iframe>
 </body>
 
 </html>
