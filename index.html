@@ -39,6 +39,11 @@
             gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => {
                 googleFormSessionId = id
                 // replace values in src string
+                console.log('all ready to replace now:')
+                console.log(googleFormSessionId)
+                console.log(googleFormClientId)
+
+
                 var t = 0;
                 var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
                     t = t + 1;
