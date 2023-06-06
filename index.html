@@ -71,20 +71,3 @@
 </body>
 
 </html>
-
-<script>
-    //replace iframe source with user data values
-    var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
-    var googleFormSrc = googleForm.getAttribute('src')
-    var googleFormClientId;
-    gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => googleFormClientId = client_id)
-    var googleFormSessionId;
-    gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => googleFormSessionId = id);
-    var t = 0;
-    var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
-        t = t + 1;
-        return t === 2 ? googleFormSessionId : googleFormClientId;
-    });
-    // inject new src into iframe
-    googleForm.setAttribute('src', result)
-</script>
