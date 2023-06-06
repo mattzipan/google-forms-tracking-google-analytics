@@ -18,6 +18,10 @@
 </head>
 
 <body>
+    <script>
+
+    </script>
+
     <iframe
         src="https://docs.google.com/forms/d/e/1FAIpQLSffBTD6UF5Weh1hDNHd4QSxlg4da0jxTTml666EKTn37xR1Qg/viewform?usp=pp_url&entry.1796799655=sdflkhjasdflkjhl&entry.1038416998=sdafkjhsdlkhjajk&embedded=true"
         width="640" height="884" frameborder="0" marginheight="0" marginwidth="0">
@@ -66,6 +70,17 @@
             t = t + 1;
             return t === 2 ? googleFormSessionId : googleFormClientId;
         });
+
+        // first inject once the cookie values are available
+        while (!googleFormSessionId) {
+            console.log('session data not yet available')
+            googleFormSessionId = getGaSessionId()
+        }
+
+        while (!googleFormClientId) {
+            console.log('client id data not yet available')
+            googleFormClientId = getGaClientID();
+        }
 
         // inject new src into iframe
         googleForm.setAttribute('src', result)
