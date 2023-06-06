@@ -31,38 +31,56 @@
     <script>
         //replace iframe source with user data values
         // function to get client ID
-        var getGaClientID = function () {
-            const gaCookie = document.cookie.split(';').find(cookie => cookie.includes('_ga='));
-            if (gaCookie) {
-                const gaValue = gaCookie.split('=')[1];
-                const gaParts = gaValue.split('.');
-                if (gaParts.length >= 3) {
-                    return gaParts.slice(2).join('.');
-                }
-            }
-            return null;
-        }
-        // function to get session ID
-        var getGaSessionId = function () {
-            // Get the cookie value
-            var cookieValue = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('_ga_'))
-                .split('=')[1];
+        // var getGaClientID = function () {
+        //     const gaCookie = document.cookie.split(';').find(cookie => cookie.includes('_ga='));
+        //     if (gaCookie) {
+        //         const gaValue = gaCookie.split('=')[1];
+        //         const gaParts = gaValue.split('.');
+        //         if (gaParts.length >= 3) {
+        //             return gaParts.slice(2).join('.');
+        //         }
+        //     }
+        //     return null;
+        // }
+        // // function to get session ID
+        // var getGaSessionId = function () {
+        //     // Get the cookie value
+        //     var cookieValue = document.cookie
+        //         .split('; ')
+        //         .find(row => row.startsWith('_ga_'))
+        //         .split('=')[1];
 
-            // Extract the value between the 2nd and 3rd period (.)
-            if (cookieValue) {
-                var value = cookieValue.split('.')[2];
-                // Return the extracted value
-                return value;
-            }
-            return null;
-        }
+        //     // Extract the value between the 2nd and 3rd period (.)
+        //     if (cookieValue) {
+        //         var value = cookieValue.split('.')[2];
+        //         // Return the extracted value
+        //         return value;
+        //     }
+        //     return null;
+        // }
 
         var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
         var googleFormSrc = googleForm.getAttribute('src')
-        var googleFormClientId = getGaClientID();
-        var googleFormSessionId = getGaSessionId()
+        // temp
+        //var googleFormClientId = getGaClientID();
+        //var googleFormSessionId = getGaSessionId()
+
+        var googleFormClientId;
+        var googleFormSessionId;
+
+        async function firstFunction() {
+            return gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => googleFormClientId = client_id);
+        };
+        gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => googleFormSessionId = id);
+
+        async function secondFunction() {
+            var ha = await firstFunction();
+            // now wait for firstFunction to finish...
+            // do something else
+            console.log('now its there:');
+            console.log(ha);
+        };
+
 
         // replace pre-filled link values with session data
         var t = 0;
@@ -71,16 +89,6 @@
             return t === 2 ? googleFormSessionId : googleFormClientId;
         });
 
-        // first inject once the cookie values are available
-        while (!googleFormSessionId) {
-            console.log('session data not yet available')
-            googleFormSessionId = getGaSessionId()
-        }
-
-        while (!googleFormClientId) {
-            console.log('client id data not yet available')
-            googleFormClientId = getGaClientID();
-        }
 
         // inject new src into iframe
         googleForm.setAttribute('src', result)
@@ -91,3 +99,20 @@
 </body>
 
 </html>
+
+<script>
+    //replace iframe source with user data values
+    var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
+    var googleFormSrc = googleForm.getAttribute('src')
+    var googleFormClientId;
+    gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => googleFormClientId = client_id)
+    var googleFormSessionId;
+    gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => googleFormSessionId = id);
+    var t = 0;
+    var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
+        t = t + 1;
+        return t === 2 ? googleFormSessionId : googleFormClientId;
+    });
+    // inject new src into iframe
+    googleForm.setAttribute('src', result)
+</script>
