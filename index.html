@@ -32,17 +32,33 @@
         //replace iframe source with user data values
         var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
         var googleFormSrc = googleForm.getAttribute('src')
-        var googleFormClientId;
-        var googleFormSessionId;
-        gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => {
-            googleFormClientId = client_id
-            gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (id) => {
-                googleFormSessionId = id
+
+        var getGoogleClientId = new Promise((resolve, reject) => {
+            gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => {
+                if (client_id) {
+                    resolve(client_id);
+                } else {
+                    reject('Error fetching client_id');
+                }
+            });
+        });
+
+        var getGoogleSessionId = new Promise((resolve, reject) => {
+            gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (session_id) => {
+                if (session_id) {
+                    resolve(session_id);
+                } else {
+                    reject('Error fetching session_id');
+                }
+            });
+        });
+
+        Promise.all([getGoogleClientId, getGoogleSessionId])
+            .then(([googleFormClientId, googleFormSessionId]) => {
                 // replace values in src string
                 console.log('all ready to replace now:')
                 console.log(googleFormSessionId)
                 console.log(googleFormClientId)
-
 
                 var t = 0;
                 var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
@@ -51,8 +67,8 @@
                 });
                 // inject new src into iframe
                 googleForm.setAttribute('src', result)
-            });
-        })
+            })
+            .catch(error => console.log(error));
     </script>
 
 
