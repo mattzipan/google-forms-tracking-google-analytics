@@ -29,12 +29,15 @@
     </iframe>
 
     <script>
+        // fill in your measurement
+        var gaMeasurementId = 'G-9WQ7FQ7ZGQ';
         //replace iframe source with user data values
         var googleForm = window.document.querySelector('iframe[src*="google.com/forms/"]');
         var googleFormSrc = googleForm.getAttribute('src')
 
+        // https://developers.google.com/tag-platform/gtagjs/reference#get
         var getGoogleClientId = new Promise((resolve, reject) => {
-            gtag('get', 'G-9WQ7FQ7ZGQ', 'client_id', (client_id) => {
+            gtag('get', gaMeasurementId, 'client_id', (client_id) => {
                 if (client_id) {
                     resolve(client_id);
                 } else {
@@ -44,7 +47,7 @@
         });
 
         var getGoogleSessionId = new Promise((resolve, reject) => {
-            gtag('get', 'G-9WQ7FQ7ZGQ', 'session_id', (session_id) => {
+            gtag('get', gaMeasurementId, 'session_id', (session_id) => {
                 if (session_id) {
                     resolve(session_id);
                 } else {
@@ -56,10 +59,6 @@
         Promise.all([getGoogleClientId, getGoogleSessionId])
             .then(([googleFormClientId, googleFormSessionId]) => {
                 // replace values in src string
-                console.log('all ready to replace now:')
-                console.log(googleFormSessionId)
-                console.log(googleFormClientId)
-
                 var t = 0;
                 var result = googleFormSrc.replace(/(?<=entry\.\d+=)([^&]+)/g, function (match) {
                     t = t + 1;
